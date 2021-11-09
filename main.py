@@ -7,6 +7,7 @@ import syslog
 
 import pandas as pd
 import time
+import sys
 
 directory = "txt"
 parseFileDirectory = "excel"
@@ -59,6 +60,13 @@ def parseExcelFileAndMakeTxt(file):
     print(data)
     write2Txt(data)
 
+def app_path():
+    """Returns the base application path."""
+    if hasattr(sys, 'frozen'):
+        # Handles PyInstaller
+        return os.path.dirname(sys.executable)  #使用pyinstaller打包后的exe目录
+    return os.path.dirname(__file__)                 #没打包前的py目录
+
 # 遍历当前文件夹
 def traverseCurrentDirectory(_directory):
     for file in os.listdir(_directory):
@@ -67,5 +75,5 @@ def traverseCurrentDirectory(_directory):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    traverseCurrentDirectory(".")
+    traverseCurrentDirectory(app_path())
 
