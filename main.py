@@ -32,20 +32,21 @@ def parseFile(filePath):
 # 解析单行数据的元组, 并返回成新的list
 def parseRowToListItem(list, row):
     if isNeedMinimumRow == "true":
-        listItem = (getattr(row, 'sku'), getattr(row, 'price'))
+        listItem = (getattr(row, 'sku'), getattr(row, 'price'),  getattr(row, '_4'))
     else:
-        listItem = (getattr(row, 'sku'), getattr(row, 'price'), getattr(row, '_4'))
+        listItem = (getattr(row, 'sku'), getattr(row, 'price'))
     print(listItem)
     list.append(listItem)
     return list
 
 # 写成文件
-def write2Txt(data):
+def write2Txt(fileName, data):
     datetime = time.strftime("%m.%d", time.localtime())
     print("current date is " + datetime)
-    checkFilePath(directory)
+    finaldirectory = directory + "/" + fileName
+    checkFilePath(finaldirectory)
     for key, value in data.items():
-        txtName = directory + "/" + key + "调价" + datetime + ".txt"
+        txtName = finaldirectory + "/" + key + "调价" + datetime + ".txt"
         fw = open(txtName, 'w')
         if isNeedMinimumRow == "true":
             fw.write('sku\tprice\tminimum-seller-allowed-price\n')
@@ -65,7 +66,7 @@ def checkFilePath(_directory):
 def parseExcelFileAndMakeTxt(file):
     data = parseFile(file)
     print(data)
-    write2Txt(data)
+    write2Txt(file.title(), data)
 
 def app_path():
     """Returns the base application path."""
