@@ -3,7 +3,6 @@
 # Press ⌃R to execute it or replace it with your code.
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 import os
-import syslog
 
 import pandas as pd
 import time
@@ -11,6 +10,8 @@ import sys
 
 directory = "txt"
 parseFileDirectory = "excel"
+# 是否需要展示最小价格一列
+isNeedMinimumRow = "false"
 
 # 解析文件，返回key=sellerId，value=[(sku， price， minmum_seller）, ...]的字典
 def parseFile(filePath):
@@ -30,7 +31,10 @@ def parseFile(filePath):
 
 # 解析单行数据的元组, 并返回成新的list
 def parseRowToListItem(list, row):
-    listItem = (getattr(row, 'sku'), getattr(row, 'price'), getattr(row, '_4'))
+    if isNeedMinimumRow == "true":
+        listItem = (getattr(row, 'sku'), getattr(row, 'price'))
+    else:
+        listItem = (getattr(row, 'sku'), getattr(row, 'price'), getattr(row, '_4'))
     print(listItem)
     list.append(listItem)
     return list
@@ -43,7 +47,10 @@ def write2Txt(data):
     for key, value in data.items():
         txtName = directory + "/" + key + "调价" + datetime + ".txt"
         fw = open(txtName, 'w')
-        fw.write('sku\tprice\tminimum-seller-allowed-price\n')
+        if isNeedMinimumRow == "true":
+            fw.write('sku\tprice\tminimum-seller-allowed-price\n')
+        else:
+            fw.write('sku\tprice\t\n')
         for line in value:
             for a in line:
                 fw.write(str(a))
