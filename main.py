@@ -7,8 +7,15 @@ import os
 import pandas as pd
 import time
 import sys
+import zipfile
 
-directory = "txt"
+
+def getCurrentDateTime():
+    return time.strftime("%m.%d", time.localtime())
+
+
+directorytemp = getCurrentDateTime() + "调价"
+
 parseFileDirectory = "excel"
 # 是否需要展示最小价格一列
 isNeedMinimumRow = "false"
@@ -43,7 +50,7 @@ def parseRowToListItem(list, row):
 def write2Txt(fileName, data):
     datetime = time.strftime("%m.%d", time.localtime())
     print("current date is " + datetime)
-    finaldirectory = directory + "/" + fileName
+    finaldirectory = directorytemp + "/" + fileName
     checkFilePath(finaldirectory)
     for key, value in data.items():
         txtName = finaldirectory + "/" + key + "调价" + datetime + ".txt"
@@ -80,6 +87,13 @@ def traverseCurrentDirectory(_directory):
     for file in os.listdir(_directory):
         if (file.endswith("xlsx") or file.endswith("xls")):
             parseExcelFileAndMakeTxt(file)
+    # zipFile(directorytemp)
+
+def zipFile(_directory):
+    if _directory is not None:
+        zip_file = zipfile.ZipFile(_directory + '.zip', 'w')
+        # 把整个目录下所有内容，压缩为new.zip文件
+        zip_file.write(_directory, compress_type=zipfile.ZIP_DEFLATED)
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
