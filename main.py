@@ -3,18 +3,27 @@
 # Press ⌃R to execute it or replace it with your code.
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 import os
+import sys
+import time
+import zipfile
 
 import pandas as pd
-import time
-import sys
-import zipfile
+
+# 创建调价模板
+CREATE_TYPE_PRICE_UPDATE = 1
+# 创建跟帖模板
+CREATE_TYPE_FOLLOW_UP = 2
+createType = CREATE_TYPE_FOLLOW_UP
 
 
 def getCurrentDateTime():
     return time.strftime("%m.%d", time.localtime())
 
 
-directorytemp = getCurrentDateTime() + "调价"
+if createType == CREATE_TYPE_PRICE_UPDATE:
+    directorytemp = getCurrentDateTime() + "调价"
+else:
+    directorytemp = getCurrentDateTime() + "跟帖"
 
 parseFileDirectory = "excel"
 # 是否需要展示最小价格一列
@@ -32,9 +41,13 @@ def parseFile(filePath):
     for row in df.itertuples():
         key = str(getattr(row, "sellerID"))
         list = data.get(key)
-        if (list is None):
+        if list is None:
             list = []
-        data[key] = parseRowToListItem(list, row)
+
+        if createType == CREATE_TYPE_PRICE_UPDATE:
+            data[key] = parseRowToListItem(list, row)
+        else:
+            data[key] = parseRowToListItemForFollow(list, row)
     return data
 
 
@@ -49,6 +62,15 @@ def parseRowToListItem(list, row):
     return list
 
 
+def parseRowToListItemForFollow(list, row):
+    listItem = (getattr(row, 'sku'), getattr(row, '_3'), getattr(row, '_4'), getattr(row, 'price'),
+                getattr(row, '_6'), getattr(row, '_7'),
+                getattr(row, 'batteries_required'), getattr(row, 'supplier_declared_dg_hz_regulation1'))
+    print(listItem)
+    list.append(listItem)
+    return list
+
+
 # 写成文件
 def write2Txt(fileName, data):
     datetime = time.strftime("%m.%d", time.localtime())
@@ -56,12 +78,19 @@ def write2Txt(fileName, data):
     finaldirectory = directorytemp + "/" + fileName
     checkFilePath(finaldirectory)
     for key, value in data.items():
-        txtName = finaldirectory + "/" + key + "调价" + datetime + ".txt"
-        fw = open(txtName, 'w')
-        if isNeedMinimumRow == "true":
-            fw.write('sku\tprice\tminimum-seller-allowed-price\n')
+        if createType == CREATE_TYPE_PRICE_UPDATE:
+            txtName = finaldirectory + "/" + key + "调价" + datetime + ".txt"
         else:
-            fw.write('sku\tprice\t\n')
+            txtName = finaldirectory + "/" + key + "跟帖" + datetime + ".txt"
+        fw = open(txtName, 'w')
+        if createType == CREATE_TYPE_PRICE_UPDATE:
+            if isNeedMinimumRow == "true":
+                fw.write('sku\tprice\tminimum-seller-allowed-price\n')
+            else:
+                fw.write('sku\tprice\t\n')
+        else:
+            fw.write('sku\tproduct-id\tproduct-id-type\tprice\titem-condition\tfulfillment-center-id'
+                     '\tbatteries_required\tsupplier_declared_dg_hz_regulation1\t\n')
         for line in value:
             for a in line:
                 fw.write(str(a))
