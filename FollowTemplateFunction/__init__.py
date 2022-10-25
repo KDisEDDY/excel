@@ -8,7 +8,7 @@ def getCurrentDateTime():
     return time.strftime("%m.%d", time.localtime())
 
 
-directory_temp = getCurrentDateTime() + "调价"
+directory_temp = getCurrentDateTime() + "跟帖"
 
 
 # 检查文件目录是否存在，不存在则创建
@@ -99,7 +99,7 @@ class BaseFollowTemplate:
         finaldirectory = directory_temp + "/" + fileName
         checkFilePath(finaldirectory)
         for key, value in data.items():
-            txtName = finaldirectory + "/" + key + "调价" + datetime + ".txt"
+            txtName = finaldirectory + "/" + key + "跟帖" + datetime + ".txt"
             fw = open(txtName, 'w')
             fw.write('sku\tprice\t\n')
             for line in value:
@@ -128,7 +128,7 @@ class MXFollowTemplateFunc(BaseFollowTemplate):
         finaldirectory = directory_temp + "/" + fileName
         checkFilePath(finaldirectory)
         for key, value in data.items():
-            txtName = finaldirectory + "/" + key + "调价" + datetime + ".txt"
+            txtName = finaldirectory + "/" + key + "跟帖" + datetime + ".txt"
             fw = open(txtName, 'w+')
             if self.isNeedMinimumRow == "true":
                 fw.write('sku\tprice\tminimum-seller-allowed-price\n')
@@ -166,7 +166,7 @@ class EUFollowTemplateFunc(BaseFollowTemplate):
         final_directory = directory_temp + "/" + fileName
         checkFilePath(final_directory)
         for key, value in data.items():
-            txt_name = final_directory + "/" + key + "调价" + datetime + ".txt"
+            txt_name = final_directory + "/" + key + "跟帖" + datetime + ".txt"
             fw = open(txt_name, 'w')
             fw.write('sku\tproduct-id\tproduct-id-type\tproduct-id-type'
                      '\tprice\titem-condition\tquantity\tadd-delete\tfulfillment-center-id'
