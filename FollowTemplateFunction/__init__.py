@@ -1,4 +1,7 @@
+import math
 import os
+from math import nan
+
 import pandas as pd
 import time
 import zipfile
@@ -150,13 +153,15 @@ class EUFollowTemplateFunc(BaseFollowTemplate):
     # are_batteries_included=False, supplier_declared_dg_hz_regulation1='Not Applicable',
     # supplier_declared_dg_hz_regulation2='Not Applicable')
     def parseRowToListItem(self, list, row):
+        quantity = getattr(row, 'quantity')
+        if math.isnan(quantity):
+            quantity = ""
         list_item = (getattr(row, 'sku'), getattr(row, '_3'), getattr(row, '_4'),
-                     getattr(row, 'price'), getattr(row, '_6'), getattr(row, 'quantity'),
+                     getattr(row, 'price'), getattr(row, '_6'), quantity,
                      getattr(row, '_8'), getattr(row, '_9'),
                      getattr(row, 'batteries_required'),
                      getattr(row, 'are_batteries_included'), getattr(row, 'supplier_declared_dg_hz_regulation1'),
                      getattr(row, 'supplier_declared_dg_hz_regulation2'))
-        # print(list_item)
         list.append(list_item)
         return list
 
@@ -168,8 +173,8 @@ class EUFollowTemplateFunc(BaseFollowTemplate):
         for key, value in data.items():
             txt_name = final_directory + "/" + key + "跟帖" + datetime + ".txt"
             fw = open(txt_name, 'w')
-            fw.write('sku\tproduct-id\tproduct-id-type\tproduct-id-type'
-                     '\tprice\titem-condition\tquantity\tadd-delete\tfulfillment-center-id'
+            fw.write('sku\tproduct-id\tproduct-id-type\t'
+                     'price\titem-condition\tquantity\tadd-delete\tfulfillment-center-id'
                      '\tbatteries_required\tare_batteries_included\tsupplier_declared_dg_hz_regulation1'
                      '\tsupplier_declared_dg_hz_regulation2\n')
             for line in value:
