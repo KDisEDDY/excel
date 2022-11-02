@@ -6,6 +6,7 @@ import os
 import sys
 
 import FollowTemplateFunction
+from FindSkuMaxQuantity import FindSkuMaxQuantity
 
 
 def app_path():
@@ -18,5 +19,7 @@ def app_path():
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    followTemplate = FollowTemplateFunction.EUFollowTemplateFunc()
-    followTemplate.traverseCurrentDirectory(app_path())
+#    followTemplate = FollowTemplateFunction.EUFollowTemplateFunc()
+#    followTemplate.traverseCurrentDirectory(app_path())
+        findSkiMaxQuantity = FindSkuMaxQuantity()
+        findSkiMaxQuantity.traverseCurrentDirectory(app_path())
