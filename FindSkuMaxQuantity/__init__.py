@@ -12,7 +12,7 @@ def getCurrentDateTime():
 
 
 def getOutputExcelName():
-    return getCurrentDateTime() + "sku_quantity" + ".xlsx"
+    return getCurrentDateTime() + "分货-sku汇总" + ".xlsx"
 
 
 def writeInExcel(split_arrays):
