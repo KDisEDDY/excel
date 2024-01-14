@@ -11,7 +11,7 @@ def getCurrentDateTime():
     return time.strftime("%m.%d", time.localtime())
 
 
-directory_temp = getCurrentDateTime() + "跟帖"
+directory_temp = getCurrentDateTime() + "_updateMinPrice"
 
 
 # 检查文件目录是否存在，不存在则创建
@@ -114,13 +114,13 @@ class BaseFollowTemplate:
 
 #  林组长站点跟帖模板
 class MXFollowTemplateFunc(BaseFollowTemplate):
-    isNeedMinimumRow = "false"
+    isNeedMinimumRow = False
 
     def parseRowToListItem(self, list, row):
-        if self.isNeedMinimumRow == "true":
-            list_item = (getattr(row, 'sku'), getattr(row, 'price'), getattr(row, '_4'))
+        if self.isNeedMinimumRow:
+            list_item = (getattr(row, 'sku'),  getattr(row, '_3'))
         else:
-            list_item = (getattr(row, 'sku'), getattr(row, 'price'))
+            list_item = (getattr(row, 'sku'))
         print(list_item)
         list.append(list_item)
         return list
@@ -131,12 +131,12 @@ class MXFollowTemplateFunc(BaseFollowTemplate):
         finaldirectory = directory_temp + "/" + fileName
         checkFilePath(finaldirectory)
         for key, value in data.items():
-            txtName = finaldirectory + "/" + key + "跟帖" + datetime + ".txt"
+            txtName = finaldirectory + "/" + key + "_updateMinPrice_" + datetime + ".txt"
             fw = open(txtName, 'w+')
-            if self.isNeedMinimumRow == "true":
-                fw.write('sku\tprice\tminimum-seller-allowed-price\n')
+            if self.isNeedMinimumRow:
+                fw.write('sku\tminimum-seller-allowed-price\n')
             else:
-                fw.write('sku\tprice\t\n')
+                fw.write('sku\t\n')
             for line in value:
                 for a in line:
                     fw.write(str(a))
