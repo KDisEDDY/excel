@@ -19,7 +19,7 @@ def writeInExcel(split_arrays):
     if split_arrays:
         df = pd.DataFrame(split_arrays, columns=["sku", "quantity"])
         with pd.ExcelWriter(getOutputExcelName()) as writer:
-            df.to_excel(writer, sheet_name="Sheet1")
+            df.to_excel(writer, sheet_name="Sheet1", index= False)
 
 
 def isMatch(content, ptn):
